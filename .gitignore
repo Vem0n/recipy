@@ -126,4 +126,16 @@ dist
 .yarn/install-state.gz
 .pnp.*
 config.js
-frontend/
+.dart_tool/
+.idea/
+android/
+build/
+ios/
+linux/
+macos/
+web/
+windows/
+.metadata
+analysis_options
+pubspec.lock
+recipy.iml
