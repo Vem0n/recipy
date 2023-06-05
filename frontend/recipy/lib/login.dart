@@ -10,9 +10,36 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Create an AnimationController
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    // Create a curved animation
+    _animation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+
+    // Start the animation
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +49,24 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Container(
+            SizedBox(
               width: 360,
               height: 500,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
-                    'Nice to see you!',
-                    style: themeModel.currentTheme.textTheme.displayLarge,
-                  ),
+                  AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (BuildContext context, Widget? child) {
+                        return Opacity(
+                          opacity: _animation.value,
+                          child: Text(
+                            style:
+                                themeModel.currentTheme.textTheme.displayLarge,
+                            'Nice to see you!',
+                          ),
+                        );
+                      }),
                   Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18)),
@@ -84,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: 200,
                   child: Image.asset('assets/images/footer.png'),
