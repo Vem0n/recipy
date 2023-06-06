@@ -21,17 +21,20 @@ class _LoginPageState extends State<LoginPage>
   void initState() {
     super.initState();
 
-    // Create an AnimationController
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
     );
 
-    // Create a curved animation
-    _animation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    final curvedAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.bounceOut,
+    );
 
-    // Start the animation
+    final tween = Tween<double>(begin: -200, end: 0);
+
+    _animation = tween.animate(curvedAnimation);
+
     _animationController.forward();
   }
 
@@ -56,17 +59,26 @@ class _LoginPageState extends State<LoginPage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   AnimatedBuilder(
-                      animation: _animationController,
-                      builder: (BuildContext context, Widget? child) {
-                        return Opacity(
-                          opacity: _animation.value,
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, _animation.value),
+                        child: Container(
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(100),boxShadow: [
+                            BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 12.8,
+                                offset: const  Offset(0, 17))
+                          ]),
                           child: Text(
+                            'Nice to see you!',
                             style:
                                 themeModel.currentTheme.textTheme.displayLarge,
-                            'Nice to see you!',
                           ),
-                        );
-                      }),
+                        ),
+                      );
+                    },
+                  ),
                   Card(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18)),
