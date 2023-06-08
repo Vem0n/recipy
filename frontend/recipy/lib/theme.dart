@@ -9,6 +9,8 @@ class ThemeModel extends ChangeNotifier {
   static const Color secondaryColorDark = Color.fromARGB(255, 36, 35, 35);
   static const Color darkThemeTextColor = Color.fromARGB(255, 240, 171, 81);
   static const Color lightThemeTextColor = Color.fromARGB(255, 8, 8, 8);
+  static const Color darkThemeDisabledColor = Color.fromARGB(255, 131, 93, 93);
+  static const Color darkThemeEnabledColor = Color.fromARGB(255, 132, 145, 60);
 
   ThemeData _currentTheme = _buildDarkTheme();
 
@@ -26,55 +28,62 @@ class ThemeModel extends ChangeNotifier {
       iconTheme: const IconThemeData(color: lightThemeTextColor, size: 24),
       canvasColor: secondaryColorLight,
       textTheme: const TextTheme(
-        displayLarge: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-            color: lightThemeTextColor),
-        bodyLarge: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'OpenSans',
-          color: lightThemeTextColor
-        ),
-        bodySmall: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'OpenSans',
-          color: lightThemeTextColor
-        )
-      ),
+          displayLarge: TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+              color: lightThemeTextColor),
+          displayMedium: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+              color: lightThemeTextColor),
+          bodyLarge: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'OpenSans',
+              color: lightThemeTextColor),
+          bodySmall: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.normal,
+              fontFamily: 'OpenSans',
+              color: lightThemeTextColor)),
       // Define other light theme properties
     );
   }
 
   static ThemeData _buildDarkTheme() {
     return ThemeData(
-      brightness: Brightness.dark,
-      primaryColor: primaryColorDark,
-      iconTheme: const IconThemeData(color: darkThemeTextColor, size: 24),
-      canvasColor: secondaryColorDark,
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'OpenSans',
-            color: darkThemeTextColor),
-        bodyLarge: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'OpenSans',
-          color: darkThemeTextColor
-        ),
-        bodySmall: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.normal,
-          fontFamily: 'OpenSans',
-          color: darkThemeTextColor
-        )
-      ),
-      // Define other dark theme properties
-    );
+        brightness: Brightness.dark,
+        primaryColor: primaryColorDark,
+        iconTheme: const IconThemeData(color: darkThemeTextColor, size: 24),
+        canvasColor: secondaryColorDark,
+        textTheme: const TextTheme(
+            displayLarge: TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+                color: darkThemeTextColor),
+            displayMedium: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+                color: darkThemeTextColor),
+            bodyLarge: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+                fontFamily: 'OpenSans',
+                color: darkThemeTextColor),
+            bodySmall: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.normal,
+                fontFamily: 'OpenSans',
+                color: darkThemeTextColor)),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            backgroundColor: darkThemeDisabledColor,
+            splashColor: darkThemeEnabledColor)
+        // Define other dark theme properties
+        );
   }
 }
 

@@ -139,3 +139,4 @@ windows/
 analysis_options
 pubspec.lock
 recipy.iml
+config.dart

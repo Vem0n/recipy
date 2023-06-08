@@ -7,6 +7,10 @@ import 'login.dart';
 import 'register.dart';
 import 'home_page.dart';
 import 'favourite.dart';
+import 'search_page.dart';
+import 'result_page.dart';
+import 'random_choice_page.dart';
+import 'recipe_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,8 +26,8 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int currentIndex = 3;
-  final List<Widget> pages = [const LoginPage(), const RegistrationPage(), const HomePage(), FavouritePage()];
+  int currentIndex = 7;
+  final List<Widget> pages = [const LoginPage(), const RegistrationPage(), const HomePage(), FavouritePage(), SearchPage(), ResultPage(), RandomChoicePage(), RecipePage()];
 
   @override
   Widget build(BuildContext context) {
