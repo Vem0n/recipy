@@ -26,8 +26,33 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int currentIndex = 7;
-  final List<Widget> pages = [const LoginPage(), const RegistrationPage(), const HomePage(), FavouritePage(), SearchPage(), ResultPage(), RandomChoicePage(), RecipePage()];
+  int currentIndex = 3;
+  int navbarState = 0;
+  int defaultNavbarIndex = 1;
+
+  void updateCurrentIndex(int newIndex) {
+    setState(() {
+      currentIndex = newIndex;
+    });
+  }
+
+  List<Widget> pages = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    pages = [
+      RandomChoicePage(updateIndex: updateCurrentIndex),
+      HomePage(updateIndex: updateCurrentIndex),
+      FavouritePage(updateIndex: updateCurrentIndex),
+      LoginPage(updateIndex: updateCurrentIndex),
+      RegistrationPage(updateIndex: updateCurrentIndex),
+      SearchPage(updateIndex: updateCurrentIndex),
+      ResultPage(updateIndex: updateCurrentIndex),
+      RecipePage(updateIndex: updateCurrentIndex),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,14 +71,15 @@ class _MainAppState extends State<MainApp> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      if (currentIndex != 0 && currentIndex != 1)
+                      if (currentIndex != 3 && currentIndex != 4)
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: TextButton(
                             onPressed: () {
                               debugPrint('One pole killed');
                             },
-                            child: IconTheme(data: themeModel.currentTheme.iconTheme,
+                            child: IconTheme(
+                              data: themeModel.currentTheme.iconTheme,
                               child: const Icon(
                                 Icons.history,
                                 size: 38,
@@ -65,14 +91,15 @@ class _MainAppState extends State<MainApp> {
                         'Recipy',
                         style: themeModel.currentTheme.textTheme.displayLarge,
                       ),
-                      if (currentIndex != 0 && currentIndex != 1)
+                      if (currentIndex != 3 && currentIndex != 4)
                         Padding(
                           padding: const EdgeInsets.only(top: 19),
                           child: TextButton(
                             onPressed: () {
                               debugPrint('One pole killed');
                             },
-                            child: IconTheme(data: themeModel.currentTheme.iconTheme,
+                            child: IconTheme(
+                              data: themeModel.currentTheme.iconTheme,
                               child: const Icon(
                                 Icons.account_circle_outlined,
                                 size: 38,
@@ -85,16 +112,26 @@ class _MainAppState extends State<MainApp> {
                   Expanded(child: pages[currentIndex]),
                 ],
               ),
-              bottomNavigationBar: currentIndex != 0 && currentIndex != 1
+              bottomNavigationBar: currentIndex != 3 && currentIndex != 4
                   ? CurvedNavigationBar(
-                    animationDuration: const Duration(milliseconds: 420),
+                      animationDuration: const Duration(milliseconds: 420),
                       color: themeModel.currentTheme.canvasColor,
                       backgroundColor: themeModel.currentTheme.primaryColor,
+                      index: defaultNavbarIndex,
                       items: const [
                         Icon(Icons.shuffle),
-                        Icon(Icons.add, size: 34,),
+                        Icon(
+                          Icons.add,
+                          size: 34,
+                        ),
                         Icon(Icons.favorite)
                       ],
+                      onTap: (index) {
+                        setState(() {
+                          navbarState = index;
+                          currentIndex = navbarState;
+                        });
+                      },
                     )
                   : null,
             ),
@@ -104,4 +141,3 @@ class _MainAppState extends State<MainApp> {
     );
   }
 }
-

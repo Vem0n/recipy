@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 
 class RecipePage extends StatefulWidget {
-  const RecipePage({Key? key}) : super(key: key);
+  const RecipePage({Key? key, required void Function(int newIndex) updateIndex}) : super(key: key);
 
   @override
   _RecipePageState createState() => _RecipePageState();

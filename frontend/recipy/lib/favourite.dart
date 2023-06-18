@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 
 class FavouritePage extends StatefulWidget {
-  const FavouritePage({Key? key}) : super(key: key);
+  const FavouritePage({Key? key, required void Function(int newIndex) updateIndex}) : super(key: key);
 
   @override
   _FavouritePageState createState() => _FavouritePageState();

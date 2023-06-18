@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required void Function(int newIndex) updateIndex});
 
   @override
   State<HomePage> createState() => _HomePageState();

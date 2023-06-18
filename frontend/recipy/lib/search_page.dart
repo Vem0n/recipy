@@ -11,7 +11,7 @@ var bgcPrimal = colorButtonsDark.darkThemeDisabledColor;
 var bgcVegan = colorButtonsDark.darkThemeDisabledColor;
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  const SearchPage({super.key, required void Function(int newIndex) updateIndex});
 
   @override
   _SearchPageState createState() => _SearchPageState();

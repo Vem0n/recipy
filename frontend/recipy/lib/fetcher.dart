@@ -29,4 +29,19 @@ class Fetcher {
     
     return response;
   }
+
+  static Future<dynamic> put(String baseUrl, String endpoint, dynamic data) async {
+    final url = Uri.parse('$baseUrl$endpoint');
+
+    final encodedData = jsonEncode(data);
+    debugPrint(encodedData);
+
+    final response = await http.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: encodedData,
+    );
+    
+    return response;
+  }
 }

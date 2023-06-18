@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage({Key? key}) : super(key: key);
+  const ResultPage({Key? key, required void Function(int newIndex) updateIndex}) : super(key: key);
 
   @override
   _ResultPageState createState() => _ResultPageState();

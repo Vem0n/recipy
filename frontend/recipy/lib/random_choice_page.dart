@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 
 class RandomChoicePage extends StatefulWidget {
-  const RandomChoicePage({super.key});
+  const RandomChoicePage({super.key, required void Function(int newIndex) updateIndex});
 
   @override
   State<RandomChoicePage> createState() => _RandomChoicePageState();
