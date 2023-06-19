@@ -5,6 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';
 
+/* TODO: Write suggestion logic (on tap append to list and view as object, add string to search query)
+         Write diet button logic, on tap append to search query,
+         Write search logic, on tap contacts API and passes result to resultPage(),
+         Allow deletion of undesired ingredients from list
+ */
+
 bool isVegan = false;
 bool isPrimal = false;
 var bgcPrimal = colorButtonsDark.darkThemeDisabledColor;
@@ -114,115 +120,119 @@ class _SearchPageState extends State<SearchPage> {
     return Container(
       color: themeModel.currentTheme.primaryColor,
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 330,
-            height: 60,
-            child: Card(
-              elevation: 24,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 4.0),
-                child: TextField(
-                  controller: _textEditingController,
-                  onChanged: _onTextChanged,
-                  decoration: InputDecoration(
-                      prefixIcon: IconTheme(
-                        data: themeModel.currentTheme.iconTheme,
-                        child: const Padding(
-                          padding: EdgeInsets.only(top: 4.0),
-                          child: Icon(Icons.search),
-                        ),
-                      ),
-                      border: InputBorder.none),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: _suggestions.length,
-            itemBuilder: (context, index) {
-              final suggestion = _suggestions[index];
-              return ListTile(
-                title: Text(suggestion),
-                onTap: () {
-                  setState(() {
-                    _textEditingController.text = suggestion;
-                    _suggestions = [];
-                  });
-                },
-              );
-            },
-          ),
-          const SizedBox(
-            height: 40,
-          ),
-          const SizedBox(
-            height: 180,
-            width: 360,
-            child: Card(
-              elevation: 24,
-            ),
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                width: 80,
-                height: 80,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      primalButtonHandler();
-                    });
-                    debugPrint('Based primal');
-                  },
-                  backgroundColor: bgcPrimal,
-                  splashColor: colorButtonsDark.darkThemeEnabledColor,
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                  child: IconTheme(
-                      data: themeModel.currentTheme.iconTheme,
-                      child: const ImageIcon(AssetImage('assets/images/meat.png'),
-                          size: 44)),
+                width: 330,
+                height: 60,
+                child: Card(
+                  elevation: 24,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 4.0),
+                    child: TextField(
+                      controller: _textEditingController,
+                      onChanged: _onTextChanged,
+                      decoration: InputDecoration(
+                          prefixIcon: IconTheme(
+                            data: themeModel.currentTheme.iconTheme,
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 4.0),
+                              child: Icon(Icons.search),
+                            ),
+                          ),
+                          border: InputBorder.none),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(
-                height: 80,
-                width: 80,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      veganButtonHandler();
-                    });
-                    debugPrint('Based vegan');
-                  },
-                  backgroundColor: bgcVegan,
-                  splashColor: colorButtonsDark.darkThemeEnabledColor,
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                  child: IconTheme(
-                      data: themeModel.currentTheme.iconTheme,
-                      child: const ImageIcon(
-                          AssetImage('assets/images/vegan.png'),
-                          size: 44)),
+              const SizedBox(height: 8),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: _suggestions.length,
+                itemBuilder: (context, index) {
+                  final suggestion = _suggestions[index];
+                  return ListTile(
+                    title: Text(suggestion),
+                    onTap: () {
+                      setState(() {
+                        _textEditingController.text = suggestion;
+                        _suggestions = [];
+                      });
+                    },
+                  );
+                },
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              const SizedBox(
+                height: 180,
+                width: 360,
+                child: Card(
+                  elevation: 24,
                 ),
               ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          primalButtonHandler();
+                        });
+                        debugPrint('Based primal');
+                      },
+                      backgroundColor: bgcPrimal,
+                      splashColor: colorButtonsDark.darkThemeEnabledColor,
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                      child: IconTheme(
+                          data: themeModel.currentTheme.iconTheme,
+                          child: const ImageIcon(AssetImage('assets/images/meat.png'),
+                              size: 44)),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          veganButtonHandler();
+                        });
+                        debugPrint('Based vegan');
+                      },
+                      backgroundColor: bgcVegan,
+                      splashColor: colorButtonsDark.darkThemeEnabledColor,
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                      child: IconTheme(
+                          data: themeModel.currentTheme.iconTheme,
+                          child: const ImageIcon(
+                              AssetImage('assets/images/vegan.png'),
+                              size: 44)),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 40),
+              Card(
+                elevation: 10,
+                child: TextButton(onPressed: () {
+                  debugPrint('Things done');
+                }, child: Padding(
+                  padding: const EdgeInsets.only(left: 25, right: 25),
+                  child: Text("Search!", style: themeModel.currentTheme.textTheme.displayMedium,),
+                )),
+              )
             ],
           ),
-          const SizedBox(height: 40),
-          Card(
-            elevation: 10,
-            child: TextButton(onPressed: () {
-              debugPrint('Things done');
-            }, child: Padding(
-              padding: const EdgeInsets.only(left: 25, right: 25),
-              child: Text("Search!", style: themeModel.currentTheme.textTheme.displayMedium,),
-            )),
-          )
-        ],
+        ),
       ),
     );
   }

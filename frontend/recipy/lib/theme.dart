@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class ThemeModel extends ChangeNotifier {
-  // Define your colors here
   static const Color primaryColorLight = Color.fromARGB(255, 225, 225, 225);
   static const Color primaryColorDark = Color.fromARGB(255, 48, 48, 48);
   static const Color secondaryColorLight = Color.fromARGB(255, 206, 200, 200);
@@ -13,13 +14,38 @@ class ThemeModel extends ChangeNotifier {
   static const Color darkThemeEnabledColor = Color.fromARGB(255, 132, 145, 60);
 
   ThemeData _currentTheme = _buildDarkTheme();
+  Timer? _themeControllerTimer;
 
   ThemeData get currentTheme => _currentTheme;
 
-  void setTheme(bool isDarkMode) {
-    _currentTheme = isDarkMode ? _buildDarkTheme() : _buildLightTheme();
+  ThemeModel() {
+    _loadTheme();
+    _startWatchingThemeChanges();
+  }
+
+  void _loadTheme() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? themeController = prefs.getString('theme');
+    if (themeController == 'Dark') {
+      _currentTheme = _buildDarkTheme();
+    } else if (themeController == 'Light') {
+      _currentTheme = _buildLightTheme();
+    }
     notifyListeners();
   }
+
+  void _startWatchingThemeChanges() {
+    _themeControllerTimer = Timer.periodic(Duration(seconds: 1), (_) {
+      _loadTheme();
+    });
+  }
+
+  @override
+  void dispose() {
+    _themeControllerTimer?.cancel();
+    super.dispose();
+  }
+
 
   static ThemeData _buildLightTheme() {
     return ThemeData(
@@ -48,7 +74,6 @@ class ThemeModel extends ChangeNotifier {
               fontWeight: FontWeight.normal,
               fontFamily: 'OpenSans',
               color: lightThemeTextColor)),
-      // Define other light theme properties
     );
   }
 
@@ -81,9 +106,7 @@ class ThemeModel extends ChangeNotifier {
                 color: darkThemeTextColor)),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: darkThemeDisabledColor,
-            splashColor: darkThemeEnabledColor)
-        // Define other dark theme properties
-        );
+            splashColor: darkThemeEnabledColor));
   }
 }
 

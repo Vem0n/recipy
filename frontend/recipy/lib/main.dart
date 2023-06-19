@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 import 'login.dart';
 import 'register.dart';
-import 'home_page.dart';
 import 'favourite.dart';
 import 'search_page.dart';
 import 'result_page.dart';
 import 'random_choice_page.dart';
 import 'recipe_page.dart';
+import 'settingsPage.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +26,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int currentIndex = 3;
+  int currentIndex = 7;
   int navbarState = 0;
   int defaultNavbarIndex = 1;
 
@@ -44,13 +44,13 @@ class _MainAppState extends State<MainApp> {
 
     pages = [
       RandomChoicePage(updateIndex: updateCurrentIndex),
-      HomePage(updateIndex: updateCurrentIndex),
+      SearchPage(updateIndex: updateCurrentIndex),
       FavouritePage(updateIndex: updateCurrentIndex),
       LoginPage(updateIndex: updateCurrentIndex),
       RegistrationPage(updateIndex: updateCurrentIndex),
-      SearchPage(updateIndex: updateCurrentIndex),
       ResultPage(updateIndex: updateCurrentIndex),
       RecipePage(updateIndex: updateCurrentIndex),
+      settingsPage(),
     ];
   }
 
@@ -96,7 +96,7 @@ class _MainAppState extends State<MainApp> {
                           padding: const EdgeInsets.only(top: 19),
                           child: TextButton(
                             onPressed: () {
-                              debugPrint('One pole killed');
+                              updateCurrentIndex(7);
                             },
                             child: IconTheme(
                               data: themeModel.currentTheme.iconTheme,
