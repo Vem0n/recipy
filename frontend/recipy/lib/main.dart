@@ -29,6 +29,7 @@ class _MainAppState extends State<MainApp> {
   int currentIndex = 3;
   int navbarState = 0;
   int defaultNavbarIndex = 1;
+  IconData iconData = Icons.history;
 
   void updateCurrentIndex(int newIndex) {
     setState(() {
@@ -52,6 +53,10 @@ class _MainAppState extends State<MainApp> {
       RecipePage(updateIndex: updateCurrentIndex),
       settingsPage(updateIndex: updateCurrentIndex),
     ];
+
+    if (currentIndex == 6) {
+      iconData = Icons.arrow_back_ios_new;
+    }
   }
 
   @override
@@ -76,12 +81,12 @@ class _MainAppState extends State<MainApp> {
                           padding: const EdgeInsets.only(top: 19),
                           child: TextButton(
                             onPressed: () {
-                              debugPrint('One pole killed');
+                              updateCurrentIndex(5);
                             },
                             child: IconTheme(
                               data: themeModel.currentTheme.iconTheme,
-                              child: const Icon(
-                                Icons.history,
+                              child: Icon(
+                                iconData,
                                 size: 38,
                               ),
                             ),

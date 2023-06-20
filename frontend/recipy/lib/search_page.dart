@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'config.dart';
 import 'package:dio/dio.dart';
@@ -11,26 +12,20 @@ import 'theme.dart';
          Allow deletion of undesired ingredients from list
  */
 
-bool isVegan = false;
-bool isPrimal = false;
-var bgcPrimal = colorButtonsDark.darkThemeDisabledColor;
-var bgcVegan = colorButtonsDark.darkThemeDisabledColor;
-
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key, required void Function(int newIndex) updateIndex});
+  final void Function(int newIndex) updateIndex;
+
+  const SearchPage(
+      {Key? key, required this.updateIndex}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
-class colorButtonsDark {
-  static const Color darkThemeDisabledColor = Color.fromARGB(255, 131, 93, 93);
-  static const Color darkThemeEnabledColor = Color.fromARGB(255, 132, 145, 60);
-}
-
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _textEditingController = TextEditingController();
   List<String> _suggestions = [];
+  List<String> _selectedIngredients = [];
   Timer? _debounceTimer;
 
   @override
@@ -61,6 +56,26 @@ class _SearchPageState extends State<SearchPage> {
     }
   }
 
+  void searchHandler() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final snackBar = SnackBar(
+      content: Text(
+        'Search for ingredients first!',
+        style: ThemeModel().currentTheme.textTheme.bodyLarge,
+      ),
+      duration: const Duration(seconds: 5), backgroundColor: ThemeModel().currentTheme.canvasColor,
+    );
+
+    if (_selectedIngredients.isNotEmpty) {
+      final ingredients = _selectedIngredients.join(',');
+      prefs.setString('ingredients', ingredients);
+      prefs.remove('savedList');
+      widget.updateIndex(5);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   void _onTextChanged(String searchText) {
     _debounceTimer?.cancel();
 
@@ -84,34 +99,6 @@ class _SearchPageState extends State<SearchPage> {
         debugPrint('Error: $error');
       });
     });
-  }
-
-  void primalButtonHandler() {
-    if (isPrimal == false) {
-      if (isVegan == true) {
-        isVegan = false;
-      }
-      isPrimal = true;
-      bgcPrimal = colorButtonsDark.darkThemeEnabledColor;
-      bgcVegan = colorButtonsDark.darkThemeDisabledColor;
-    } else {
-      isPrimal = false;
-      bgcPrimal = colorButtonsDark.darkThemeDisabledColor;
-    }
-  }
-
-  void veganButtonHandler() {
-    if (isVegan == false) {
-      if (isPrimal == true) {
-        isPrimal = false;
-      }
-      isVegan = true;
-      bgcVegan = colorButtonsDark.darkThemeEnabledColor;
-      bgcPrimal = colorButtonsDark.darkThemeDisabledColor;
-    } else {
-      isVegan = false;
-      bgcVegan = colorButtonsDark.darkThemeDisabledColor;
-    }
   }
 
   @override
@@ -158,8 +145,9 @@ class _SearchPageState extends State<SearchPage> {
                     title: Text(suggestion),
                     onTap: () {
                       setState(() {
-                        _textEditingController.text = suggestion;
                         _suggestions = [];
+                        _selectedIngredients.add(suggestion);
+                        _textEditingController.text = '';
                       });
                     },
                   );
@@ -168,67 +156,56 @@ class _SearchPageState extends State<SearchPage> {
               const SizedBox(
                 height: 40,
               ),
-              const SizedBox(
+              SizedBox(
                 height: 180,
                 width: 360,
                 child: Card(
                   elevation: 24,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _selectedIngredients.length,
+                          itemBuilder: (context, index) {
+                            final ingredient = _selectedIngredients[index];
+                            return ListTile(
+                              title: Row(children: [
+                                Expanded(child: Text(ingredient)),
+                                TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedIngredients.remove(ingredient);
+                                      });
+                                    },
+                                    child: IconTheme(
+                                        data: themeModel.currentTheme.iconTheme,
+                                        child:
+                                            const Icon(Icons.cancel_outlined)))
+                              ]),
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        setState(() {
-                          primalButtonHandler();
-                        });
-                        debugPrint('Based primal');
-                      },
-                      backgroundColor: bgcPrimal,
-                      splashColor: colorButtonsDark.darkThemeEnabledColor,
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: IconTheme(
-                          data: themeModel.currentTheme.iconTheme,
-                          child: const ImageIcon(AssetImage('assets/images/meat.png'),
-                              size: 44)),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        setState(() {
-                          veganButtonHandler();
-                        });
-                        debugPrint('Based vegan');
-                      },
-                      backgroundColor: bgcVegan,
-                      splashColor: colorButtonsDark.darkThemeEnabledColor,
-                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: IconTheme(
-                          data: themeModel.currentTheme.iconTheme,
-                          child: const ImageIcon(
-                              AssetImage('assets/images/vegan.png'),
-                              size: 44)),
-                    ),
-                  ),
-                ],
               ),
               const SizedBox(height: 40),
               Card(
                 elevation: 10,
-                child: TextButton(onPressed: () {
-                  debugPrint('Things done');
-                }, child: Padding(
-                  padding: const EdgeInsets.only(left: 25, right: 25),
-                  child: Text("Search!", style: themeModel.currentTheme.textTheme.displayMedium,),
-                )),
+                child: TextButton(
+                    onPressed: () {
+                      searchHandler();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25),
+                      child: Text(
+                        "Search!",
+                        style: themeModel.currentTheme.textTheme.displayMedium,
+                      ),
+                    )),
               )
             ],
           ),

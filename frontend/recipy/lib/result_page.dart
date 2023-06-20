@@ -1,29 +1,84 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'config.dart';
 import 'theme.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage({Key? key, required void Function(int newIndex) updateIndex}) : super(key: key);
+  final void Function(int newIndex) updateIndex;
+
+  const ResultPage({Key? key, required this.updateIndex}) : super(key: key);
 
   @override
   _ResultPageState createState() => _ResultPageState();
 }
 
 class _ResultPageState extends State<ResultPage> {
-  List<ListItem> itemList = [
-    ListItem(imageUrl: 'your_image_url_1', title: 'Title 1', index: 0),
-    ListItem(imageUrl: 'your_image_url_2', title: 'Title 2', index: 1),
-    ListItem(imageUrl: 'your_image_url_1', title: 'Title 1', index: 2),
-    ListItem(imageUrl: 'your_image_url_2', title: 'Title 2', index: 3),
-    ListItem(imageUrl: 'your_image_url_1', title: 'Title 1', index: 4),
-    ListItem(imageUrl: 'your_image_url_2', title: 'Title 2', index: 5),
-    ListItem(imageUrl: 'your_image_url_1', title: 'Title 1', index: 6),
-    ListItem(imageUrl: 'your_image_url_2', title: 'Title 2', index: 7),
-    ListItem(imageUrl: 'your_image_url_1', title: 'Title 1', index: 8),
-    ListItem(imageUrl: 'your_image_url_2', title: 'Title 2', index: 9),
-    ListItem(imageUrl: 'your_image_url_1', title: 'Title 1', index: 10),
-    ListItem(imageUrl: 'your_image_url_2', title: 'Title 2', index: 11),
-  ];
+  List<ListItem> itemList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    pagePopulator();
+  }
+
+  void pagePopulator() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final dio = Dio();
+    final apiKey = config.apiKey;
+    const baseUrl = 'https://api.spoonacular.com/recipes/findByIngredients';
+    final ingredients = prefs.getString('ingredients');
+    var encodedList;
+    final savedList = prefs.getString('savedList');
+
+    if (ingredients != null && savedList == null) {
+      final response = await dio.get(baseUrl, queryParameters: {
+        'apiKey': apiKey,
+        'ingredients': ingredients,
+        'number': '5'
+      });
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        prefs.remove('ingredients');
+
+        itemList.clear();
+
+        for (var i = 0; i < data.length; i++) {
+          final item = data[i];
+          itemList.add(ListItem(
+            imageUrl: item['image'],
+            title: item['title'],
+            index: i,
+            id: item['id'],
+          ));
+
+          encodedList =
+              jsonEncode(itemList.map((item) => item.toJson()).toList());
+          prefs.setString('savedList', encodedList);
+
+          setState(() {});
+        }
+      } else {
+        throw Exception('Failed to fetch recipes');
+      }
+    } else if (itemList.isEmpty && savedList != null) {
+      final decodedList = jsonDecode(savedList) as List<dynamic>;
+      final loadedItemList = decodedList
+          .map((item) => ListItem(
+                imageUrl: item['imageUrl'],
+                title: item['title'],
+                index: item['index'],
+                id: item['id'],
+              ))
+          .toList();
+      setState(() {
+        itemList = loadedItemList;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,36 +104,52 @@ class _ResultPageState extends State<ResultPage> {
             child: Card(
               elevation: 4,
               child: TextButton(
-                onPressed: () {
-                  debugPrint('Card tapped');
+                onPressed: () async {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  int selectedId = itemList[index].id;
+                  prefs.setInt('selectedRecipe', selectedId);
+                  widget.updateIndex(6);
                 },
                 child: ListTile(
-                  title: Padding(
-                    padding: const EdgeInsets.only(top: 12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Row(
-                            children: [
-                              IconTheme(
-                                data: themeModel.currentTheme.iconTheme,
-                                child: const Icon(Icons.image),
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(
-                                child: Text(
-                                  item.title,
-                                  style:
-                                      themeModel.currentTheme.textTheme.bodyLarge,
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              height: 80,
+                              child: Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: themeModel
+                                          .currentTheme.dialogBackgroundColor,
+                                      width: 4),
+                                  borderRadius: BorderRadius.circular(18),
+                                  shape: BoxShape.rectangle,
+                                  image: DecorationImage(
+                                      image: NetworkImage(item.imageUrl),
+                                      fit: BoxFit.cover),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 20),
+                            Expanded(
+                              child: Text(
+                                item.title,
+                                style: themeModel
+                                    .currentTheme.textTheme.displaySmall,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -96,13 +167,33 @@ class _ResultPageState extends State<ResultPage> {
 }
 
 class ListItem {
-  final String imageUrl;
-  final String title;
-  final int index;
+  String imageUrl;
+  String title;
+  int index;
+  int id;
 
   ListItem({
     required this.imageUrl,
     required this.title,
     required this.index,
+    required this.id,
   });
+
+  factory ListItem.fromJson(Map<String, dynamic> json) {
+    return ListItem(
+      imageUrl: json['imageUrl'],
+      title: json['title'],
+      index: json['index'],
+      id: json['id'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'imageUrl': imageUrl,
+      'title': title,
+      'index': index,
+      'id': id,
+    };
+  }
 }

@@ -46,11 +46,11 @@ class ThemeModel extends ChangeNotifier {
     super.dispose();
   }
 
-
   static ThemeData _buildLightTheme() {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: primaryColorLight,
+      dialogBackgroundColor: Color.fromARGB(189, 206, 200, 200),
       iconTheme: const IconThemeData(color: lightThemeTextColor, size: 24),
       canvasColor: secondaryColorLight,
       textTheme: const TextTheme(
@@ -61,6 +61,11 @@ class ThemeModel extends ChangeNotifier {
               color: lightThemeTextColor),
           displayMedium: TextStyle(
               fontSize: 26,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+              color: lightThemeTextColor),
+          displaySmall: TextStyle(
+              fontSize: 18,
               fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
               color: lightThemeTextColor),
@@ -81,6 +86,7 @@ class ThemeModel extends ChangeNotifier {
     return ThemeData(
         brightness: Brightness.dark,
         primaryColor: primaryColorDark,
+        dialogBackgroundColor: const Color.fromARGB(189, 36, 35, 35),
         iconTheme: const IconThemeData(color: darkThemeTextColor, size: 24),
         canvasColor: secondaryColorDark,
         textTheme: const TextTheme(
@@ -91,6 +97,11 @@ class ThemeModel extends ChangeNotifier {
                 color: darkThemeTextColor),
             displayMedium: TextStyle(
                 fontSize: 26,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+                color: darkThemeTextColor),
+            displaySmall: TextStyle(
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'OpenSans',
                 color: darkThemeTextColor),
