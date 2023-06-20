@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class settingsPage extends StatefulWidget {
   final void Function(int newIndex) updateIndex;
@@ -28,6 +30,64 @@ class _settingsPageState extends State<settingsPage> {
         theme = 'Dark';
       });
       prefs.setString('theme', theme);
+    }
+  }
+
+  void deleteAccountPostsHandler() async {
+    final dio = Dio();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token') ?? '';
+
+    try {
+      final response = await dio.delete(
+        'http://10.0.2.2:8080/api/favourites',
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+      } else {
+        final errorMessage = response.data['message'];
+        print(errorMessage);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void deleteUser() async {
+    final dio = Dio();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? token = prefs.getString('token');
+
+    if (token != null) {
+      final Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      final userId = decodedToken['userId'];
+
+      try {
+        final response = await dio.delete(
+          'http://10.0.2.2:8080/auth/$userId',
+          options: Options(
+            headers: {
+              'Authorization': 'Bearer $token',
+            },
+          ),
+        );
+
+        if (response.statusCode == 200) {
+        } else {
+          final errorMessage = response.data['message'];
+          print(errorMessage);
+        }
+      } catch (e) {
+        print(e.toString());
+      } finally {
+        prefs.remove('token');
+        widget.updateIndex(3);
+      }
     }
   }
 
@@ -68,7 +128,11 @@ class _settingsPageState extends State<settingsPage> {
                   borderRadius: BorderRadius.circular(18)),
               elevation: 22,
               child: TextButton(
-                onPressed: () {},
+                onPressed: () async {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  deleteUser();
+                },
                 child: Text(
                   'Delete Account',
                   style: themeModel.currentTheme.textTheme.displayMedium,
@@ -89,7 +153,8 @@ class _settingsPageState extends State<settingsPage> {
               elevation: 22,
               child: TextButton(
                 onPressed: () async {
-                  final SharedPreferences prefs = await SharedPreferences.getInstance();
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
                   prefs.remove('token');
                   widget.updateIndex(3);
                 },

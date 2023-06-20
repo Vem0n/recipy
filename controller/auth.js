@@ -3,6 +3,7 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const token = require('jsonwebtoken');
 const keys = require('../config');
+const Item = require('../models/post');
 
 exports.signup = async (req, res, next) => {
   try {
@@ -70,6 +71,21 @@ exports.signup = async (req, res, next) => {
       res.status(200).json({ token: userToken, userId: loadedUser?._id.toString() });
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  exports.deleteUser = async (req, res, next) => {
+    try {
+      const userId = req.params.userId;
+  
+      await User.findByIdAndRemove(userId);
+  
+      res.status(200).json({ message: 'User deleted.' });
+    } catch (err) {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     }
   };
   

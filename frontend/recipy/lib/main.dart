@@ -34,7 +34,18 @@ class _MainAppState extends State<MainApp> {
   void updateCurrentIndex(int newIndex) {
     setState(() {
       currentIndex = newIndex;
+      iconHandler();
     });
+  }
+
+  void iconHandler() {
+        if (currentIndex == 6) {
+      setState(() {
+        iconData = Icons.arrow_back_ios_new;
+      });
+    } else {
+      iconData = Icons.history;
+    }
   }
 
   List<Widget> pages = [];
@@ -54,9 +65,6 @@ class _MainAppState extends State<MainApp> {
       settingsPage(updateIndex: updateCurrentIndex),
     ];
 
-    if (currentIndex == 6) {
-      iconData = Icons.arrow_back_ios_new;
-    }
   }
 
   @override

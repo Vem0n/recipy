@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipy/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'theme.dart';
 
 class RecipePage extends StatefulWidget {
@@ -17,6 +18,11 @@ class _RecipePageState extends State<RecipePage> {
   List<String> ingredients = [];
   var imageUrl;
   String instructions = 'placeholder';
+  bool isLoading = true;
+  var saveId;
+  var saveName;
+  bool isFavourite = false;
+  IconData favouriteIcon = Icons.favorite_border;
 
   String removeHtmlTags(String htmlText) {
     RegExp htmlTagsRegex = RegExp(r'<[^>]*>');
@@ -71,10 +77,43 @@ class _RecipePageState extends State<RecipePage> {
         }).toList();
 
         imageUrl = recipeData['image'];
+        saveName = capitalize(recipeData['title']);
+        saveId = chosenRecipeId;
         instructions = removeHtmlTags(recipeData['instructions']);
       }
     } catch (e) {
       throw Exception('Something went wrong: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void favouriteHandler() async {
+    if (isFavourite == false) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString('token');
+      final dio = Dio();
+      dio.options.headers['Authorization'] = 'Bearer $token';
+      Map<String, dynamic> requestBody = {
+        'title': saveName,
+        'imageurl': imageUrl,
+        'receivedId': saveId,
+      };
+
+      favouriteIcon = Icons.favorite;
+
+      try {
+        Response response = await dio.post('http://10.0.2.2:8080/api/favourite',
+            data: requestBody);
+        print(response.data);
+      } catch (e) {
+        print(e.toString());
+      }
+    } else if (isFavourite == false) {
+      favouriteIcon = Icons.favorite_border;
+      return;
     }
   }
 
@@ -91,72 +130,98 @@ class _RecipePageState extends State<RecipePage> {
     return Scaffold(
       backgroundColor: themeModel.currentTheme.primaryColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              if (imageUrl != null && imageUrl.isNotEmpty)
-                Card(
-                  elevation: 22,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.fill,
-                  ),
+        child: isLoading
+            ? const Center(
+                child: SpinKitCircle(
+                  color: Color.fromARGB(255, 80, 82, 201),
+                  size: 50.0,
                 ),
-              Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Ingredients:',
-                        style: themeModel.currentTheme.textTheme.displayMedium,
-                      ),
-                      SizedBox(height: 8),
-                      SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                          itemCount: ingredients.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            String ingredient = ingredients[index];
-                            return Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  ingredient,
-                                  style: themeModel
-                                      .currentTheme.textTheme.displaySmall,
-                                ),
-                              ),
-                            );
-                          },
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    if (imageUrl != null && imageUrl.isNotEmpty)
+                      Card(
+                        elevation: 22,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Image.network(
+                          imageUrl,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                    ],
-                  ),
+                    Card(
+                      elevation: 4,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Ingredients:',
+                              style: themeModel
+                                  .currentTheme.textTheme.displayMedium,
+                            ),
+                            const SizedBox(height: 8),
+                            SizedBox(
+                              height: 100,
+                              child: ListView.builder(
+                                itemCount: ingredients.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  String ingredient = ingredients[index];
+                                  return Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        ingredient,
+                                        style: themeModel.currentTheme.textTheme
+                                            .displaySmall,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Recipe',
+                            style:
+                                themeModel.currentTheme.textTheme.displayMedium,
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  favouriteHandler();
+                                });
+                              },
+                              child: IconTheme(
+                                  data: themeModel.currentTheme.iconTheme,
+                                  child: Icon(favouriteIcon)))
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        instructions,
+                        style: themeModel.currentTheme.textTheme.displaySmall,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Text(
-                  'Recipe',
-                  style: themeModel.currentTheme.textTheme.displayMedium,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  instructions,
-                  style: themeModel.currentTheme.textTheme.displaySmall,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

@@ -3,8 +3,10 @@ const { body } = require('express-validator');
 
 const User = require('../models/user');
 const authController = require('../controller/auth');
+const isAuth = require('../middleware/isAuth');
 
 const router = express.Router();
+const auth =  isAuth;
 
 router.put('/signup', [
     body('email').isEmail().withMessage('Enter a valid email').custom((value, { req }) => {
@@ -19,5 +21,6 @@ router.put('/signup', [
 ], authController.signup);
 
 router.post('/login', authController.login);
+router.delete('/:userId', auth, authController.deleteUser);
 
 module.exports = router;

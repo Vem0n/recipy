@@ -89,6 +89,32 @@ exports.deletePost = async (req, res, next) => {
   }
 };
 
+exports.deletePosts = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+
+    const posts = await Item.find({ owner: userId });
+
+    if (posts.length > 0) {
+      await Item.deleteMany({ owner: userId });
+
+      const user = await User.findById(userId);
+
+      if (user) {
+        user.favourites = [];
+        await user.save();
+      }
+    }
+
+    res.status(200).json({ message: 'Deleted all posts.' });
+  } catch (err) {
+    if (!err.statusCode) {
+      err.statusCode = 500;
+    }
+    next(err);
+  }
+};
+
 
 exports.getItem = async (req, res, next) => {
   try {

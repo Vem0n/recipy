@@ -1,48 +1,98 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipy/config.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 import 'theme.dart';
 
 class RandomChoicePage extends StatefulWidget {
-  const RandomChoicePage({super.key, required void Function(int newIndex) updateIndex});
+  final void Function(int newIndex) updateIndex;
+
+  const RandomChoicePage({Key? key, required this.updateIndex})
+      : super(key: key);
 
   @override
   State<RandomChoicePage> createState() => _RandomChoicePageState();
 }
 
-bool isVegan = false;
-bool isPrimal = false;
-var bgcPrimal = ThemeModel.darkThemeDisabledColor;
-var bgcVegan = ThemeModel.darkThemeDisabledColor;
-
-void primalButtonHandler() {
-  if (isPrimal == false) {
-    if (isVegan == true) {
-      isVegan = false;
-    }
-    isPrimal = true;
-    bgcPrimal = ThemeModel.darkThemeEnabledColor;
-    bgcVegan = ThemeModel.darkThemeDisabledColor;
-  } else {
-    isPrimal = false;
-    bgcPrimal = ThemeModel.darkThemeDisabledColor;
-  }
-}
-
-void veganButtonHandler() {
-  if (isVegan == false) {
-    if (isPrimal == true) {
-      isPrimal = false;
-    }
-    isVegan = true;
-    bgcVegan = ThemeModel.darkThemeEnabledColor;
-    bgcPrimal = ThemeModel.darkThemeDisabledColor;
-  } else {
-    isVegan = false;
-    bgcVegan = ThemeModel.darkThemeDisabledColor;
-  }
-}
-
 class _RandomChoicePageState extends State<RandomChoicePage> {
+  bool isVegan = false;
+  bool isPrimal = false;
+  Color bgcPrimal = ThemeModel.darkThemeDisabledColor;
+  Color bgcVegan = ThemeModel.darkThemeDisabledColor;
+  String diet = '';
+
+  void primalButtonHandler() {
+    if (!isPrimal) {
+      if (isVegan) {
+        setState(() {
+          isVegan = false;
+        });
+      }
+      setState(() {
+        isPrimal = true;
+        diet = 'primal';
+        bgcPrimal = ThemeModel.darkThemeEnabledColor;
+        bgcVegan = ThemeModel.darkThemeDisabledColor;
+      });
+    } else {
+      setState(() {
+        isPrimal = false;
+        diet = '';
+        bgcPrimal = ThemeModel.darkThemeDisabledColor;
+      });
+    }
+  }
+
+  void veganButtonHandler() {
+    if (!isVegan) {
+      if (isPrimal) {
+        setState(() {
+          isPrimal = false;
+        });
+      }
+      setState(() {
+        isVegan = true;
+        diet = 'vegetarian';
+        bgcVegan = ThemeModel.darkThemeEnabledColor;
+        bgcPrimal = ThemeModel.darkThemeDisabledColor;
+      });
+    } else {
+      setState(() {
+        isVegan = false;
+        diet = '';
+        bgcVegan = ThemeModel.darkThemeDisabledColor;
+      });
+    }
+  }
+
+  void randomSearchHandler() async {
+    final dio = Dio();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final apiKey = config.apiKey;
+    final queryParams = <String, dynamic>{
+      'apiKey': apiKey,
+      'tags': diet,
+      'number': 5,
+    };
+
+    try {
+      final response = await dio.get(
+        'https://api.spoonacular.com/recipes/random',
+        queryParameters: queryParams,
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        String itemId = responseData['recipes'][0]['id'].toString();
+        int parsedId = int.parse(itemId);
+        prefs.setInt('selectedRecipe', parsedId);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final themeModel = context.watch<ThemeModel>();
@@ -76,7 +126,6 @@ class _RandomChoicePageState extends State<RandomChoicePage> {
                     setState(() {
                       primalButtonHandler();
                     });
-                    debugPrint('Based primal');
                   },
                   backgroundColor: bgcPrimal,
                   splashColor: ThemeModel.darkThemeEnabledColor,
@@ -97,7 +146,6 @@ class _RandomChoicePageState extends State<RandomChoicePage> {
                     setState(() {
                       veganButtonHandler();
                     });
-                    debugPrint('Based vegan');
                   },
                   backgroundColor: bgcVegan,
                   splashColor: ThemeModel.darkThemeEnabledColor,
@@ -117,7 +165,8 @@ class _RandomChoicePageState extends State<RandomChoicePage> {
             elevation: 10,
             child: TextButton(
                 onPressed: () {
-                  debugPrint('Things done');
+                  randomSearchHandler();
+                  widget.updateIndex(6);
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 25, right: 25),

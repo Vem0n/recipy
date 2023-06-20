@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage>
         'http://10.0.2.2:8080',
         '/auth/login',
         data,
-      );
+      ).timeout(Duration(seconds: 4));
 
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
@@ -139,6 +139,7 @@ class _LoginPageState extends State<LoginPage>
         );
       }
     } catch (e) {
+      isContacting = false;
       scaffoldMessenger.showSnackBar(
         SnackBar(
           content: Text('Error: $e'),
