@@ -26,7 +26,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  int currentIndex = 7;
+  int currentIndex = 3;
   int navbarState = 0;
   int defaultNavbarIndex = 1;
 
@@ -50,7 +50,7 @@ class _MainAppState extends State<MainApp> {
       RegistrationPage(updateIndex: updateCurrentIndex),
       ResultPage(updateIndex: updateCurrentIndex),
       RecipePage(updateIndex: updateCurrentIndex),
-      settingsPage(),
+      settingsPage(updateIndex: updateCurrentIndex),
     ];
   }
 

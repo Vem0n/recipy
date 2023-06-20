@@ -4,7 +4,9 @@ import 'theme.dart';
 import 'package:provider/provider.dart';
 
 class settingsPage extends StatefulWidget {
-  const settingsPage({super.key});
+  final void Function(int newIndex) updateIndex;
+
+  const settingsPage({Key? key, required this.updateIndex}) : super(key: key);
 
   @override
   State<settingsPage> createState() => _settingsPageState();
@@ -69,6 +71,30 @@ class _settingsPageState extends State<settingsPage> {
                 onPressed: () {},
                 child: Text(
                   'Delete Account',
+                  style: themeModel.currentTheme.textTheme.displayMedium,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 40,
+          ),
+          SizedBox(
+            width: 300,
+            height: 60,
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              elevation: 22,
+              child: TextButton(
+                onPressed: () async {
+                  final SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.remove('token');
+                  widget.updateIndex(3);
+                },
+                child: Text(
+                  'Log out',
                   style: themeModel.currentTheme.textTheme.displayMedium,
                 ),
               ),
