@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:recipy/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,6 +23,7 @@ class _RandomChoicePageState extends State<RandomChoicePage> {
   Color bgcPrimal = ThemeModel.darkThemeDisabledColor;
   Color bgcVegan = ThemeModel.darkThemeDisabledColor;
   String diet = '';
+  var logger = Logger();
 
   void primalButtonHandler() {
     if (!isPrimal) {
@@ -90,7 +92,7 @@ class _RandomChoicePageState extends State<RandomChoicePage> {
         prefs.setInt('selectedRecipe', parsedId);
       }
     } catch (e) {
-      debugPrint(e.toString());
+      logger.e(e.toString());
     }
   }
   @override

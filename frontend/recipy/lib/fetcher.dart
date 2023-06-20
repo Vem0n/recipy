@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Fetcher {
@@ -19,7 +18,6 @@ class Fetcher {
     final url = Uri.parse('$baseUrl$endpoint');
 
     final encodedData = jsonEncode(data);
-    debugPrint(encodedData);
 
     final response = await http.post(
       url,
@@ -34,7 +32,6 @@ class Fetcher {
     final url = Uri.parse('$baseUrl$endpoint');
 
     final encodedData = jsonEncode(data);
-    debugPrint(encodedData);
 
     final response = await http.put(
       url,

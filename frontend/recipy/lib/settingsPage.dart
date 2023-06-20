@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:logger/logger.dart';
 
 class settingsPage extends StatefulWidget {
   final void Function(int newIndex) updateIndex;
@@ -16,6 +17,7 @@ class settingsPage extends StatefulWidget {
 
 class _settingsPageState extends State<settingsPage> {
   String theme = 'Dark';
+  var logger = Logger();
 
   void themeButtonHandler() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -51,10 +53,10 @@ class _settingsPageState extends State<settingsPage> {
       if (response.statusCode == 200) {
       } else {
         final errorMessage = response.data['message'];
-        print(errorMessage);
+        logger.e(errorMessage);
       }
     } catch (e) {
-      print(e.toString());
+      logger.e(e.toString());
     }
   }
 
@@ -80,10 +82,10 @@ class _settingsPageState extends State<settingsPage> {
         if (response.statusCode == 200) {
         } else {
           final errorMessage = response.data['message'];
-          print(errorMessage);
+          logger.e(errorMessage);
         }
       } catch (e) {
-        print(e.toString());
+        logger.e(e.toString());
       } finally {
         prefs.remove('token');
         widget.updateIndex(3);
@@ -129,8 +131,6 @@ class _settingsPageState extends State<settingsPage> {
               elevation: 22,
               child: TextButton(
                 onPressed: () async {
-                  final SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
                   deleteUser();
                 },
                 child: Text(

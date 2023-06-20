@@ -163,7 +163,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               TextButton(
                                 onPressed: () {
                                   widget.updateIndex(3);
-                                  debugPrint("We're back!");
                                 },
                                 child: Row(
                                   children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_structures.dart';
@@ -25,6 +26,7 @@ class _LoginPageState extends State<LoginPage>
   late Animation<double> _animation;
   late ScaffoldMessengerState scaffoldMessenger;
   bool isContacting = false;
+  var logger = Logger();
 
   @override
   void didChangeDependencies() {
@@ -76,7 +78,7 @@ class _LoginPageState extends State<LoginPage>
         widget.updateIndex(1);
       }
     } catch(e) {
-      debugPrint('Something went wrong: $e');
+      logger.e('Something went wrong: $e');
     }
   }
 
@@ -220,7 +222,6 @@ class _LoginPageState extends State<LoginPage>
                                     TextButton(
                                       onPressed: () {
                                         widget.updateIndex(4);
-                                        debugPrint('Amazing!');
                                       },
                                       child: Text('Register',
                                           style: themeModel.currentTheme

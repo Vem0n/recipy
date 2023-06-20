@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'config.dart';
 import 'package:dio/dio.dart';
 import 'package:provider/provider.dart';
 import 'theme.dart';
-
-/* TODO: Write suggestion logic (on tap append to list and view as object, add string to search query)
-         Write diet button logic, on tap append to search query,
-         Write search logic, on tap contacts API and passes result to resultPage(),
-         Allow deletion of undesired ingredients from list
- */
 
 class SearchPage extends StatefulWidget {
   final void Function(int newIndex) updateIndex;
@@ -27,6 +22,7 @@ class _SearchPageState extends State<SearchPage> {
   List<String> _suggestions = [];
   List<String> _selectedIngredients = [];
   Timer? _debounceTimer;
+  var logger = Logger();
 
   @override
   void dispose() {
@@ -96,7 +92,7 @@ class _SearchPageState extends State<SearchPage> {
           });
         }
       }).catchError((error) {
-        debugPrint('Error: $error');
+        logger.e('Error: $error');
       });
     });
   }

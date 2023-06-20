@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:recipy/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,6 +24,7 @@ class _RecipePageState extends State<RecipePage> {
   var saveName;
   bool isFavourite = false;
   IconData favouriteIcon = Icons.favorite_border;
+  var logger = Logger();
 
   String removeHtmlTags(String htmlText) {
     RegExp htmlTagsRegex = RegExp(r'<[^>]*>');
@@ -32,7 +34,6 @@ class _RecipePageState extends State<RecipePage> {
   void pagePopulator() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String chosenRecipeId = prefs.getInt('selectedRecipe').toString();
-    debugPrint(chosenRecipeId);
 
     final dio = Dio();
     final apiKey = config.apiKey;
@@ -105,11 +106,11 @@ class _RecipePageState extends State<RecipePage> {
       favouriteIcon = Icons.favorite;
 
       try {
+        // ignore: unused_local_variable
         Response response = await dio.post('http://10.0.2.2:8080/api/favourite',
             data: requestBody);
-        print(response.data);
       } catch (e) {
-        print(e.toString());
+        logger.e(e.toString());
       }
     } else if (isFavourite == false) {
       favouriteIcon = Icons.favorite_border;

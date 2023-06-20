@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'theme.dart';
+import 'package:logger/logger.dart';
 
 class FavouritePage extends StatefulWidget {
   final void Function(int newIndex) updateIndex;
@@ -18,6 +19,7 @@ class _FavouritePageState extends State<FavouritePage> {
   bool isConnecting = true;
   var imageUrl;
   var chosenId;
+  var logger = Logger();
 
   @override
   void initState() {
@@ -63,7 +65,7 @@ class _FavouritePageState extends State<FavouritePage> {
         });
       } else {}
     } catch (error) {
-      print(error);
+      logger.e(error);
     } finally {
       setState(() {
         isConnecting = false;
@@ -77,7 +79,6 @@ class _FavouritePageState extends State<FavouritePage> {
     String? token = prefs.getString('token');
     dio.options.headers['Authorization'] = 'Bearer $token';
     final _id = postId;
-    debugPrint(postId);
 
     String apiUrl = 'http://10.0.2.2:8080/api/favourite/$_id';
 
@@ -91,7 +92,7 @@ class _FavouritePageState extends State<FavouritePage> {
 
       } else {}
     } catch (e) {
-      print(e.toString());
+      logger.e(e.toString());
     } finally {
       setState(() {
         isConnecting = false;

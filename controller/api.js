@@ -4,9 +4,10 @@ const User = require('../models/user')
 
 exports.getItems = async (req, res, next) => {
   try {
-    const results = await Item.find();
+    const userId = req.userId;
+    const results = await Item.find({ owner: userId });
 
-    if (!results) {
+    if (!results || results.length === 0) {
       const error = new Error('404 No items found');
       res.status(404);
       throw error;
