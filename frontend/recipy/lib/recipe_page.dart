@@ -110,7 +110,7 @@ class _RecipePageState extends State<RecipePage> {
         Response response = await dio.post('http://10.0.2.2:8080/api/favourite',
             data: requestBody);
       } catch (e) {
-        logger.e(e.toString());
+        logger.e('Failed loading the items');
       }
     } else if (isFavourite == false) {
       favouriteIcon = Icons.favorite_border;

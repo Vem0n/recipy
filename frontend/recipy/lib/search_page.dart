@@ -92,7 +92,7 @@ class _SearchPageState extends State<SearchPage> {
           });
         }
       }).catchError((error) {
-        logger.e('Error: $error');
+        logger.e('Something went wrong');
       });
     });
   }

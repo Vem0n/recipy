@@ -92,7 +92,7 @@ class _RandomChoicePageState extends State<RandomChoicePage> {
         prefs.setInt('selectedRecipe', parsedId);
       }
     } catch (e) {
-      logger.e(e.toString());
+      logger.e('Something went wrong');
     }
   }
   @override

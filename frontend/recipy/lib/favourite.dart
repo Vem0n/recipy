@@ -65,7 +65,7 @@ class _FavouritePageState extends State<FavouritePage> {
         });
       } else {}
     } catch (error) {
-      logger.e(error);
+      logger.e('Something went wrong');
     } finally {
       setState(() {
         isConnecting = false;
@@ -92,7 +92,7 @@ class _FavouritePageState extends State<FavouritePage> {
 
       } else {}
     } catch (e) {
-      logger.e(e.toString());
+      logger.e('Something went wrong');
     } finally {
       setState(() {
         isConnecting = false;
@@ -107,7 +107,7 @@ class _FavouritePageState extends State<FavouritePage> {
     return Container(
       color: themeModel.currentTheme.primaryColor,
       child: isConnecting
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : itemList.isEmpty

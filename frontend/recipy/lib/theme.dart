@@ -35,7 +35,7 @@ class ThemeModel extends ChangeNotifier {
   }
 
   void _startWatchingThemeChanges() {
-    _themeControllerTimer = Timer.periodic(Duration(seconds: 1), (_) {
+    _themeControllerTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       _loadTheme();
     });
   }
@@ -50,7 +50,7 @@ class ThemeModel extends ChangeNotifier {
     return ThemeData(
       brightness: Brightness.light,
       primaryColor: primaryColorLight,
-      dialogBackgroundColor: Color.fromARGB(189, 206, 200, 200),
+      dialogBackgroundColor: const Color.fromARGB(189, 206, 200, 200),
       iconTheme: const IconThemeData(color: lightThemeTextColor, size: 24),
       canvasColor: secondaryColorLight,
       textTheme: const TextTheme(
