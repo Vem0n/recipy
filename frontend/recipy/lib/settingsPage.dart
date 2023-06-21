@@ -28,8 +28,13 @@ class _settingsPageState extends State<settingsPage> {
 
   void themeButtonNameWatcher() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? themeState = prefs.getString('theme');
     setState(() {
-      theme = prefs.getString('theme').toString();
+      if(themeState != null) {
+      theme = 'Dark';
+      } else {
+        theme = themeState.toString();
+      }
     });
   }
 
