@@ -10,8 +10,7 @@ import 'theme.dart';
 class SearchPage extends StatefulWidget {
   final void Function(int newIndex) updateIndex;
 
-  const SearchPage(
-      {Key? key, required this.updateIndex}) : super(key: key);
+  const SearchPage({Key? key, required this.updateIndex}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -23,6 +22,13 @@ class _SearchPageState extends State<SearchPage> {
   List<String> _selectedIngredients = [];
   Timer? _debounceTimer;
   var logger = Logger();
+  String catItem = 'assets/images/searchCat.png';
+
+  @override
+  void initState() {
+    super.initState();
+    themeWatcher();
+  }
 
   @override
   void dispose() {
@@ -59,7 +65,8 @@ class _SearchPageState extends State<SearchPage> {
         'Search for ingredients first!',
         style: ThemeModel().currentTheme.textTheme.bodyLarge,
       ),
-      duration: const Duration(seconds: 5), backgroundColor: ThemeModel().currentTheme.canvasColor,
+      duration: const Duration(seconds: 5),
+      backgroundColor: ThemeModel().currentTheme.canvasColor,
     );
 
     if (_selectedIngredients.isNotEmpty) {
@@ -70,6 +77,18 @@ class _SearchPageState extends State<SearchPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
+  }
+
+  void themeWatcher() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final theme = prefs.getString('theme');
+    setState(() {
+      if (theme == 'Light') {
+        catItem = 'assets/images/searchCat_light.png';
+      } else if (theme == 'Dark') {
+        catItem = 'assets/images/searchCat.png';
+      }
+    });
   }
 
   void _onTextChanged(String searchText) {
@@ -202,6 +221,14 @@ class _SearchPageState extends State<SearchPage> {
                         style: themeModel.currentTheme.textTheme.displayMedium,
                       ),
                     )),
+              ),
+              const SizedBox(
+                height: 40,
+              ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 130,
+                child: Image.asset(catItem),
               )
             ],
           ),

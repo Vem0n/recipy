@@ -57,27 +57,27 @@ class ThemeModel extends ChangeNotifier {
           displayLarge: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
+              fontFamily: 'Pacifico',
               color: lightThemeTextColor),
           displayMedium: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
+              fontFamily: 'Pacifico',
               color: lightThemeTextColor),
           displaySmall: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              fontFamily: 'OpenSans',
+              fontFamily: 'Oswald',
               color: lightThemeTextColor),
           bodyLarge: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.normal,
-              fontFamily: 'OpenSans',
+              fontFamily: 'Oswald',
               color: lightThemeTextColor),
           bodySmall: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.normal,
-              fontFamily: 'OpenSans',
+              fontFamily: 'Oswald',
               color: lightThemeTextColor)),
     );
   }
@@ -93,27 +93,27 @@ class ThemeModel extends ChangeNotifier {
             displayLarge: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
+                fontFamily: 'Pacifico',
                 color: darkThemeTextColor),
             displayMedium: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
+                fontFamily: 'Pacifico',
                 color: darkThemeTextColor),
             displaySmall: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
+                fontFamily: 'Oswald',
                 color: darkThemeTextColor),
             bodyLarge: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
-                fontFamily: 'OpenSans',
+                fontFamily: 'Oswald',
                 color: darkThemeTextColor),
             bodySmall: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.normal,
-                fontFamily: 'OpenSans',
+                fontFamily: 'Oswald',
                 color: darkThemeTextColor)),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
             backgroundColor: darkThemeDisabledColor,

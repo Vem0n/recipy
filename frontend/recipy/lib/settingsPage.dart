@@ -20,6 +20,19 @@ class _settingsPageState extends State<settingsPage> {
   String theme = 'Dark';
   var logger = Logger();
 
+    @override
+  void initState() {
+    super.initState();
+    themeButtonNameWatcher();
+  }
+
+  void themeButtonNameWatcher() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      theme = prefs.getString('theme').toString();
+    });
+  }
+
   void themeButtonHandler() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 

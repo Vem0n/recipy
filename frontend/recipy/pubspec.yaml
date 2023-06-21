@@ -29,8 +29,17 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/catDarkmode.png
-    - assets/images/catLightmode.png
     - assets/images/footer.png
     - assets/images/meat.png
     - assets/images/vegan.png
+    - assets/fonts/Oswald-Regular.ttf
+    - assets/fonts/Pacifico-Regular.ttf
+    - assets/images/searchCat.png
+    - assets/images/searchCat_light.png
+  fonts:
+    - family: Oswald
+      fonts:
+        - asset: assets/fonts/Oswald-Regular.ttf
+    - family: Pacifico
+      fonts:
+        - asset: assets/fonts/Pacifico-Regular.ttf
