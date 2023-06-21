@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:recipy/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'theme.dart';
 import 'package:provider/provider.dart';
@@ -39,10 +40,11 @@ class _settingsPageState extends State<settingsPage> {
     final dio = Dio();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String token = prefs.getString('token') ?? '';
+    final url = config.apiUrl;
 
     try {
       final response = await dio.delete(
-        'http://10.0.2.2:8080/api/favourites',
+        '$url/api/favourites',
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -64,6 +66,7 @@ class _settingsPageState extends State<settingsPage> {
     final dio = Dio();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
+    final url = config.apiUrl;
 
     if (token != null) {
       final Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
@@ -71,7 +74,7 @@ class _settingsPageState extends State<settingsPage> {
 
       try {
         final response = await dio.delete(
-          'http://10.0.2.2:8080/auth/$userId',
+          '$url/auth/$userId',
           options: Options(
             headers: {
               'Authorization': 'Bearer $token',

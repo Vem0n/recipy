@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipy/config.dart';
 import 'theme.dart';
 import 'fetcher.dart';
 import 'data_structures.dart';
@@ -39,6 +40,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
     final name = nameController.text;
     final email = emailController.text;
     final password = passwordController.text;
+    final url = config.apiUrl;
 
     if (name.isEmpty || email.isEmpty || password.isEmpty) {
       scaffoldMessenger.showSnackBar(
@@ -59,7 +61,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
       try {
         final response = await Fetcher.put(
-          'http://10.0.2.2:8080',
+          url,
           '/auth/signup',
           data,
         );
@@ -126,74 +128,70 @@ class _RegistrationPageState extends State<RegistrationPage> {
             SizedBox(
               height: 260,
               width: 400,
-              child: Expanded(
-                child: Center(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    elevation: 22,
-                    color: themeModel.currentTheme.canvasColor,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                elevation: 22,
+                color: themeModel.currentTheme.canvasColor,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextFormField(
+                        controller: nameController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your name',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: emailController,
+                        decoration: const InputDecoration(
+                          hintText: 'Email',
+                        ),
+                      ),
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          hintText: 'Password',
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          TextFormField(
-                            controller: nameController,
-                            decoration: const InputDecoration(
-                              hintText: 'Enter your name',
-                            ),
-                          ),
-                          TextFormField(
-                            controller: emailController,
-                            decoration: const InputDecoration(
-                              hintText: 'Email',
-                            ),
-                          ),
-                          TextFormField(
-                            controller: passwordController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              hintText: 'Password',
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  widget.updateIndex(3);
-                                },
-                                child: Row(
-                                  children: [
-                                    IconTheme(
-                                      data: themeModel.currentTheme.iconTheme,
-                                      child: const Icon(Icons.arrow_back),
-                                    ),
-                                    Text(
-                                      'Back',
-                                      style: themeModel
-                                          .currentTheme.textTheme.bodyLarge,
-                                    ),
-                                  ],
+                          TextButton(
+                            onPressed: () {
+                              widget.updateIndex(3);
+                            },
+                            child: Row(
+                              children: [
+                                IconTheme(
+                                  data: themeModel.currentTheme.iconTheme,
+                                  child: const Icon(Icons.arrow_back),
                                 ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  registrationHandler();
-                                },
-                                child: Text(
-                                  'Sign up',
+                                Text(
+                                  'Back',
                                   style: themeModel
                                       .currentTheme.textTheme.bodyLarge,
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              registrationHandler();
+                            },
+                            child: Text(
+                              'Sign up',
+                              style: themeModel
+                                  .currentTheme.textTheme.bodyLarge,
+                            ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),

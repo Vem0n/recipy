@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:recipy/config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'data_structures.dart';
 import 'fetcher.dart';
@@ -87,6 +88,7 @@ class _LoginPageState extends State<LoginPage>
     final password = passwordController.text;
     var token = 'placeholder';
     var userId = 'placeholder';
+    final url = config.apiUrl;
 
     if (email.isEmpty || password.isEmpty) {
       scaffoldMessenger.showSnackBar(
@@ -106,7 +108,7 @@ class _LoginPageState extends State<LoginPage>
     try {
       isContacting = true;
       final response = await Fetcher.post(
-        'http://10.0.2.2:8080',
+        url,
         '/auth/login',
         data,
       ).timeout(const Duration(seconds: 4));

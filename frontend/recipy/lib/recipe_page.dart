@@ -92,6 +92,8 @@ class _RecipePageState extends State<RecipePage> {
   }
 
   void favouriteHandler() async {
+    final recipyUrl = config.apiUrl;
+
     if (isFavourite == false) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('token');
@@ -107,7 +109,7 @@ class _RecipePageState extends State<RecipePage> {
 
       try {
         // ignore: unused_local_variable
-        Response response = await dio.post('http://10.0.2.2:8080/api/favourite',
+        Response response = await dio.post('$recipyUrl/api/favourite',
             data: requestBody);
       } catch (e) {
         logger.e('Failed loading the items');
