@@ -30,7 +30,7 @@ To build Recipy the following steps must be taken:
 
 - Use the command "flutter pub get" to download all the package dependencies specified in pubspec.yaml.
 
-- Use the command "flutter build appbundle" to create a bundle of APKs for publishing or alternatively use the command "flutter build apk --split-per-api" (Both commands might be different based on updates to Flutter, for full instructions refer to official Flutter documentation) to build 3 separate APK files that all work for a specified Kernel architecture.
+- Use the command "flutter build appbundle" to create a bundle of APKs for publishing or alternatively use the command "flutter build apk --split-per-abi" (Both commands might be different based on updates to Flutter, for full instructions refer to official Flutter documentation) to build 3 separate APK files that all work for a specified Kernel architecture.
 
 ## 4. Installation <a name="installation"></a>
 To install and set up Recipy, follow these steps:
