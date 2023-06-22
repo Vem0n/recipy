@@ -74,7 +74,7 @@ All the methods for the Node endpoints are specified in backend's "controllers" 
 
 ## 8. Contributors <a name="contributors"></a>
     -Ven0m - Coding, app architecture
-    -Wiktoria Stryjewska - Graphics used in the app (To be added at a later date)
+    -Wiktoria Stryjewska - Graphics used in the app
 
 ## 9. License <a name="license"></a>
 Recipy is released under the Apache-2.0 license. See the LICENSE file for more details.
